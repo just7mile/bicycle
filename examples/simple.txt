@@ -1,13 +1,12 @@
 void func(int x = 1) {
-    printf(x);
+    printf("value of x is " + x);
 }
 
 int main() {
-    int x = 1;
+    int x = 10;
     func(x);
 
     x = null;
-
     func(x);
 
     return 0;

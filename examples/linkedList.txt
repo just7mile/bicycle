@@ -90,11 +90,8 @@ int main() {
     printList(list);
 
     printf(get(list, 5));
-
     printf(get(list, 1));
-
     printf(remove(list, 1));
-
     printList(list);
 
     return 0;

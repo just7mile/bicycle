@@ -9,7 +9,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        File file = new File("examples/linkedList.txt");
+        File file = new File("examples/simple.txt");
         Tokenizer lexer = new Tokenizer(file);
         Parser parser = new Parser();
         try {

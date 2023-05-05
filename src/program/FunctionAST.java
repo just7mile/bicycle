@@ -134,9 +134,6 @@ public class FunctionAST extends DeclarationAST {
                     ret = ifStatement.execute(structs, vars, functions);
                 }
                 if (ret != null) {
-                    if (ret instanceof ReturnAST) {
-                        return null;
-                    }
                     return ret;
                 }
 
