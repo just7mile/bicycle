@@ -2,13 +2,23 @@ package program;
 
 import lexer.Token;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
-public class StructAST extends AST implements DeclarationAST {
+/**
+ * AST for struct.
+ */
+public class StructAST extends DeclarationAST {
+    /**
+     * Name of the struct.
+     */
     private String label;
+
+    /**
+     * Fields of the struct.
+     */
     private List<VarListAST> fields;
 
     public StructAST(String label, int line, int column) {
@@ -38,21 +48,21 @@ public class StructAST extends AST implements DeclarationAST {
     }
 
     @Override
-    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> varList, Map<String, FunctionAST> funcs, List<AST> callStack) throws Exception {
+    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> varList, Map<String, FunctionAST> functions, List<AST> callStack) throws Exception {
         Map<String, VariableAST> vars = new HashMap<>(varList);
-        for (VarListAST vs: this.fields) {
-            vs.checkSemantics(types, vars, funcs, callStack);
-            for (VariableAST v: vs.getVariables()) {
-                if (v.getValue() != null && v.getValue().isNewObject() && v.getValue().getLabel().equals(this.label)) {
+        for (VarListAST vs : this.fields) {
+            vs.checkSemantics(types, vars, functions, callStack);
+            for (VariableAST v : vs.getVariables()) {
+                if (v.getValue() != null && v.getValue().isNewObjectCreation() && v.getValue().getLabel().equals(this.label)) {
                     throw new Exception("Error at line " + v.getValue().getLine() + ", column " + v.getValue().getColumn() + ": This expression will never terminate!");
                 }
             }
         }
-        return  null;
+        return null;
     }
 
     @Override
-    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> funcs) throws Exception {
+    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> functions) throws Exception {
         return null;
     }
 
@@ -64,8 +74,8 @@ public class StructAST extends AST implements DeclarationAST {
         str.append(" ");
         str.append(Token.getLabelValue(Token.LP));
         str.append("\n");
-        for (VarListAST v: this.fields) {
-            str.append(v.toString());
+        for (VarListAST v : this.fields) {
+            str.append(v);
             str.append(Token.getLabelValue(Token.SEMICOLON));
             str.append("\n");
         }

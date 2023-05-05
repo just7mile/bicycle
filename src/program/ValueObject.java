@@ -1,5 +1,8 @@
 package program;
 
+/**
+ * Information about a value.
+ */
 public class ValueObject {
     private Object value;
 
@@ -17,7 +20,9 @@ public class ValueObject {
 
     @Override
     public String toString() {
-        if (this.value != null) return this.value.toString();
+        if (this.value != null) {
+            return this.value.toString();
+        }
         return "null";
     }
 }

@@ -5,14 +5,24 @@ import lexer.Token;
 import java.util.List;
 import java.util.Map;
 
-public class AssignmentAST extends AST implements StatementAST {
-    private String label, field;
-    private ExpressionAST expression;
+/**
+ * AST for assignments.
+ */
+public class AssignmentAST extends StatementAST {
+    /**
+     * Label of the variable to assign to (left side of the assignment).
+     */
+    private String label;
 
-    public AssignmentAST(String label, int line, int column) {
-        super(line, column);
-        this.label = label;
-    }
+    /**
+     * If the variable is a struct then the name of the struct field to assign to.
+     */
+    private String field;
+
+    /**
+     * The expression (right side of the assignment).
+     */
+    private ExpressionAST expression;
 
     public AssignmentAST(String label, String field, int line, int column) {
         super(line, column);
@@ -45,7 +55,7 @@ public class AssignmentAST extends AST implements StatementAST {
     }
 
     @Override
-    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> vars, Map<String, FunctionAST> funcs, List<AST> callStack) throws Exception {
+    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> vars, Map<String, FunctionAST> functions, List<AST> callStack) throws Exception {
         if (!vars.containsKey(this.label)) {
             throw new Exception("Error at line " + this.getLine() + ", column " + this.getColumn() + ": Variable '" + this.label + "' does not exist!");
         }
@@ -57,27 +67,31 @@ public class AssignmentAST extends AST implements StatementAST {
                 throw new Exception("Error at line " + this.getLine() + ", column " + this.getColumn() + ": Struct '" + var.getType() + "' does not have field '" + this.field + "'!");
             }
             type = fields.get(this.field);
-        } else type = var.getType();
+        } else {
+            type = var.getType();
+        }
 
 
-        String valueType = this.expression.checkSemantics(types, vars, funcs, callStack);
+        String valueType = this.expression.checkSemantics(types, vars, functions, callStack);
         if (valueType != null) {
             if (!valueType.equals("null") && !type.equals(valueType)) {
-                throw new Exception("Error at line " + this.expression.getLine() + ", column " + this.expression.getColumn() + ": Type mismatch, needed '" + type + "', but found '" + valueType + "'!");
+                throw new Exception("Error at line " + this.expression.getLine() + ", column " + this.expression.getColumn() + ": Type mismatch, expected '" + type + "', but found '" + valueType + "'!");
             }
-            if (var.getValue() == null) var.setValue(this.expression);
+            if (var.getValue() == null) {
+                var.setValue(this.expression);
+            }
         }
         return null;
     }
 
     @Override
-    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> funcs) throws Exception {
+    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> functions) throws Exception {
         ValueObject var = vars.get(this.label);
         if (this.field != null) {
             StructObject struct = (StructObject) var.getValue();
-            struct.setField(this.field, this.expression.execute(structs, vars, funcs));
+            struct.setField(this.field, this.expression.execute(structs, vars, functions));
         } else {
-            var.setValue(this.expression.execute(structs, vars, funcs));
+            var.setValue(this.expression.execute(structs, vars, functions));
         }
         return null;
     }
@@ -92,7 +106,7 @@ public class AssignmentAST extends AST implements StatementAST {
         str.append(" ");
         str.append(Token.getLabelValue(Token.ASSIGNMENT));
         str.append(" ");
-        str.append(this.expression.toString());
+        str.append(this.expression);
         return str.toString();
     }
 }

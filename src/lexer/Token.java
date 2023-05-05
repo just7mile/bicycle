@@ -1,5 +1,8 @@
 package lexer;
 
+/**
+ * Language token representation.
+ */
 public class Token {
     public static final int NONE = 0;
     public static final int BOOLEAN = 1;
@@ -53,139 +56,117 @@ public class Token {
     }
 
     public static int getTokenLabel(String token) {
-        switch (token) {
-            case "boolean": return BOOLEAN;
-            case "int": return INTEGER;
-            case "double": return DOUBLE;
-            case "string": return STRING;
-            case "struct": return STRUCT;
-            case "(": return LB;
-            case ")": return RB;
-            case "{": return LP;
-            case "}": return RP;
-            case "=": return ASSIGNMENT;
-            case ";": return SEMICOLON;
-            case ",": return COMMA;
-            case "==": return EQUAL;
-            case "<": return LESS;
-            case ">": return MORE;
-            case "<=": return LESS_EQUAL;
-            case ">=": return MORE_EQUAL;
-            case ".": return DOT;
-            case "if": return IF;
-            case "elseif": return ELSEIF;
-            case "else": return ELSE;
-            case "for": return FOR;
-            case "return": return RETURN;
-            case "printf": return PRINTF;
-            case "new": return NEW;
-            case "+": return ADDITION;
-            case "-": return SUBTRACTION;
-            case "*": return MULTIPLICATION;
-            case "/": return DIVISION;
-            case "%": return MOD;
-            case "&&": return AND;
-            case "||": return OR;
-            case "!": return NEGATION;
-            case "null": return NULL;
-            case "break": return BREAK;
-            case "void": return VOID;
-            case "!=": return NOT_EQUAL;
-        }
-        return LITERAL;
+        return switch (token) {
+            case "boolean" -> BOOLEAN;
+            case "int" -> INTEGER;
+            case "double" -> DOUBLE;
+            case "string" -> STRING;
+            case "struct" -> STRUCT;
+            case "(" -> LB;
+            case ")" -> RB;
+            case "{" -> LP;
+            case "}" -> RP;
+            case "=" -> ASSIGNMENT;
+            case ";" -> SEMICOLON;
+            case "," -> COMMA;
+            case "==" -> EQUAL;
+            case "<" -> LESS;
+            case ">" -> MORE;
+            case "<=" -> LESS_EQUAL;
+            case ">=" -> MORE_EQUAL;
+            case "." -> DOT;
+            case "if" -> IF;
+            case "elseif" -> ELSEIF;
+            case "else" -> ELSE;
+            case "for" -> FOR;
+            case "return" -> RETURN;
+            case "printf" -> PRINTF;
+            case "new" -> NEW;
+            case "+" -> ADDITION;
+            case "-" -> SUBTRACTION;
+            case "*" -> MULTIPLICATION;
+            case "/" -> DIVISION;
+            case "%" -> MOD;
+            case "&&" -> AND;
+            case "||" -> OR;
+            case "!" -> NEGATION;
+            case "null" -> NULL;
+            case "break" -> BREAK;
+            case "void" -> VOID;
+            case "!=" -> NOT_EQUAL;
+            default -> LITERAL;
+        };
     }
 
     public static String getLabelValue(int label) {
-        switch (label) {
-            case BOOLEAN: return "boolean";
-            case INTEGER: return "int";
-            case DOUBLE: return "double";
-            case STRING: return "string";
-            case STRUCT: return "struct";
-            case LB: return "(";
-            case RB: return ")";
-            case LP: return "{";
-            case RP: return "}";
-            case ASSIGNMENT: return "=";
-            case SEMICOLON: return ";";
-            case COMMA: return ",";
-            case EQUAL: return "==";
-            case LESS: return "<";
-            case MORE: return ">";
-            case LESS_EQUAL: return "<=";
-            case MORE_EQUAL: return ">=";
-            case DOT: return ".";
-            case IF: return "if";
-            case ELSEIF: return "elseif";
-            case ELSE: return "else";
-            case FOR: return "for";
-            case RETURN: return "return";
-            case PRINTF: return "printf";
-            case NEW: return "new";
-            case ADDITION: return "+";
-            case SUBTRACTION: return "-";
-            case MULTIPLICATION: return "*";
-            case DIVISION: return "/";
-            case MOD: return "%";
-            case AND: return "&&";
-            case OR: return "||";
-            case NEGATION: return "!";
-            case NULL: return "null";
-            case BREAK: return "break";
-            case VOID: return "void";
-            case NOT_EQUAL: return "!=";
-        }
-        return "";
+        return switch (label) {
+            case BOOLEAN -> "boolean";
+            case INTEGER -> "int";
+            case DOUBLE -> "double";
+            case STRING -> "string";
+            case STRUCT -> "struct";
+            case LB -> "(";
+            case RB -> ")";
+            case LP -> "{";
+            case RP -> "}";
+            case ASSIGNMENT -> "=";
+            case SEMICOLON -> ";";
+            case COMMA -> ",";
+            case EQUAL -> "==";
+            case LESS -> "<";
+            case MORE -> ">";
+            case LESS_EQUAL -> "<=";
+            case MORE_EQUAL -> ">=";
+            case DOT -> ".";
+            case IF -> "if";
+            case ELSEIF -> "elseif";
+            case ELSE -> "else";
+            case FOR -> "for";
+            case RETURN -> "return";
+            case PRINTF -> "printf";
+            case NEW -> "new";
+            case ADDITION -> "+";
+            case SUBTRACTION -> "-";
+            case MULTIPLICATION -> "*";
+            case DIVISION -> "/";
+            case MOD -> "%";
+            case AND -> "&&";
+            case OR -> "||";
+            case NEGATION -> "!";
+            case NULL -> "null";
+            case BREAK -> "break";
+            case VOID -> "void";
+            case NOT_EQUAL -> "!=";
+            default -> "";
+        };
     }
 
     public static boolean isIncorrectLabel(Token token) {
         return (token.getValue().charAt(0) > 47 && token.getValue().charAt(0) < 58) || token.getLabel() != Token.LITERAL;
     }
 
-    public static boolean isType(Token token) {
-        switch (token.getLabel()) {
-            case BOOLEAN:
-            case INTEGER:
-            case DOUBLE:
-            case STRING:
-            case VOID:
-            case LITERAL: return true;
-        }
-        return false;
+    public static boolean isNotATypeToken(Token token) {
+        return switch (token.getLabel()) {
+            case BOOLEAN, INTEGER, DOUBLE, STRING, VOID, LITERAL -> false;
+            default -> true;
+        };
     }
 
     public static boolean isExpressionToken(Token token) {
-        switch (token.getLabel()) {
-            case LB:
-            case RB:
-            case COMMA:
-            case DOT:
-            case NEW:
-            case ADDITION:
-            case SUBTRACTION:
-            case MULTIPLICATION:
-            case DIVISION:
-            case MOD:
-            case NULL:
-            case LITERAL: return true;
-        }
-        return false;
+        return switch (token.getLabel()) {
+            case LB, RB, COMMA, DOT, NEW, ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, MOD, NULL, LITERAL -> true;
+            default -> false;
+        };
     }
 
     public static boolean isCompExpressionToken(Token token) {
-        if (isExpressionToken(token)) return true;
-        switch (token.getLabel()) {
-            case EQUAL:
-            case NOT_EQUAL:
-            case LESS:
-            case MORE:
-            case LESS_EQUAL:
-            case MORE_EQUAL:
-            case MOD:
-            case AND:
-            case OR: return true;
+        if (isExpressionToken(token)) {
+            return true;
         }
-        return false;
+        return switch (token.getLabel()) {
+            case EQUAL, NOT_EQUAL, LESS, MORE, LESS_EQUAL, MORE_EQUAL, MOD, AND, OR -> true;
+            default -> false;
+        };
     }
 
     public int getLine() {

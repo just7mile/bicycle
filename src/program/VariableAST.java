@@ -5,9 +5,28 @@ import lexer.Token;
 import java.util.List;
 import java.util.Map;
 
-public class VariableAST extends AST implements StatementAST {
-    private String type, label;
+/**
+ * AST for a variable.
+ */
+public class VariableAST extends StatementAST {
+    /**
+     * Type of the variable.
+     */
+    private String type;
+
+    /**
+     * Name of the variable.
+     */
+    private String label;
+
+    /**
+     * Value of the variable.
+     */
     private ExpressionAST value;
+
+    /**
+     * Whether it is a function parameter.
+     */
     private boolean isParam;
 
     public VariableAST(String type, String label, int line, int column) {
@@ -49,15 +68,15 @@ public class VariableAST extends AST implements StatementAST {
     }
 
     @Override
-    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> vars, Map<String, FunctionAST> funcs, List<AST> callStack) throws Exception {
+    String checkSemantics(Map<String, Map<String, String>> types, Map<String, VariableAST> vars, Map<String, FunctionAST> functions, List<AST> callStack) throws Exception {
         if (types.containsKey(this.label)) {
             throw new Exception("Error at line " + this.getLine() + ", column " + this.getColumn() + ": Label '" + this.label + "' is used as type!");
         }
         if (this.value != null) {
-            String valueType = this.value.checkSemantics(types, vars, funcs, callStack);
+            String valueType = this.value.checkSemantics(types, vars, functions, callStack);
             if (valueType != null) {
                 if (!valueType.equals("null") && !this.type.equals(valueType)) {
-                    throw new Exception("Error at line " + this.value.getLine() + ", column " + this.value.getColumn() + ": Type mismatch, needed '" + this.type + "', but found '" + valueType + "'!");
+                    throw new Exception("Error at line " + this.value.getLine() + ", column " + this.value.getColumn() + ": Type mismatch, expected '" + this.type + "', but found '" + valueType + "'!");
                 }
             }
         }
@@ -65,8 +84,10 @@ public class VariableAST extends AST implements StatementAST {
     }
 
     @Override
-    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> funcs) throws Exception {
-        if (this.value != null) return this.value.execute(structs, vars, funcs);
+    Object execute(Map<String, StructAST> structs, Map<String, ValueObject> vars, Map<String, FunctionAST> functions) throws Exception {
+        if (this.value != null) {
+            return this.value.execute(structs, vars, functions);
+        }
         return null;
     }
 
@@ -77,7 +98,7 @@ public class VariableAST extends AST implements StatementAST {
             str.append(" ");
             str.append(Token.getLabelValue(Token.ASSIGNMENT));
             str.append(" ");
-            str.append(this.value.toString());
+            str.append(this.value);
         }
         return str.toString();
     }
