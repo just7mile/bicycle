@@ -2,7 +2,7 @@
 
 A simple programming language similar to C which is parsed and executed using Java.
 
-This project is for educational purposes. It contains basics of how to write a programming language.
+This project is for educational purposes. It provides basics of how to write a programming language.
 
 ## How to run
 
