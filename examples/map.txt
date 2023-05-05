@@ -1,0 +1,117 @@
+struct Node {
+    string key;
+    int val;
+    Node left = null, right = null;
+}
+
+struct Map {
+    int size = 0;
+    Node top;
+}
+
+void define(Map map, string key, int val) {
+    Node node = map.top;
+    Node newNode = new Node();
+    newNode.key = key;
+    newNode.val = val;
+    for (;;) {
+        if (node == null) {
+            break;
+        } elseif (node.key < key && node.left != null) {
+            node = node.right;
+        } elseif (node.key > key && node.right != null) {
+            node = node.left;
+        } else {
+            break;
+        }
+    }
+
+    if (node == null) {
+        map.top = newNode;
+    } else {
+        if (node.key < key) {
+            node.right = newNode;
+        } elseif (node.key > key) {
+            node.left = newNode;
+        } else {
+            node.val = val;
+            map.size = map.size - 1;
+        }
+    }
+    map.size = map.size + 1;
+}
+
+boolean contains(Map map, string key) {
+    Node node = map.top;
+
+    for(;;) {
+        if (node == null) {
+            break;
+        } elseif (node.key < key) {
+            node = node.right;
+        } elseif (node.key > key) {
+            node = node.left;
+        } else {
+            break;
+        }
+    }
+
+    if (node != null) {
+        return true;
+    }
+    return false;
+}
+
+int getValue(Map map, string key) {
+    Node node = map.top;
+
+    for(;;) {
+        if (node == null) {
+            break;
+        } elseif (node.key < key) {
+            node = node.right;
+        } elseif (node.key > key) {
+            node = node.left;
+        } else {
+            break;
+        }
+    }
+
+    if (node != null) {
+        return node.val;
+    }
+    return 0;
+}
+
+void printBST(Node node) {
+    if (node == null) {
+        return;
+    }
+
+    printf(node.key + " : " + node.val);
+
+    printBST(node.left);
+    printBST(node.right);
+}
+
+void printMap(Map map) {
+    printBST(map.top);
+}
+
+int main() {
+    Map map = new Map();
+    define(map, "hello", 1);
+    define(map, "world", 1);
+
+    printMap(map);
+
+    if (contains(map, "hello")) {
+        int x = getValue(map, "hello");
+        define(map, "hello", x + 1);
+    }
+
+    printf("----------");
+    printMap(map);
+
+    return 0;
+}

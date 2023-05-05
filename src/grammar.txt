@@ -1,0 +1,127 @@
+<program>       ::= (<decl>)*
+
+
+<decl>          ::= <structDecl>
+                |   <varListDecl>
+                |   <funcDecl>
+
+
+<structDecl>    ::= struct <label> { (<varListDecl>)* }
+
+
+<varListDecl>   ::= <type> <varDecl> (, <varDecl>)* ;
+
+
+<varDecl>       ::= <label>
+                |   <label> = <expr>
+
+
+<funcDecl>      ::= <funcType> <label> ( <paramsDecl> ) { (<statement>)* }
+
+
+<paramsDecl>    ::= <paramDecl> (, <paramDecl>)*
+                |   ∑
+
+
+<paramDecl>     ::= <type> <varDecl>
+
+
+<statement>     ::= <varListDecl>
+                |   <label> = <expr> ;
+                |   for ( <initExpr> ; <termExpr> ; <incExpr> ) { (<forStatement>)* }
+                |   if ( <compExpr> ) { (<statement>)* } (<elseif>)* else { (<statement>)* }
+                |   if ( <compExpr> ) { (<statement>)* } (<elseif>)*
+                |   <label> ( <args> ) ;
+                |   printf ( <expr> ) ;
+                |   printf () ;
+                |   return <expr> ;
+                |   return ;
+
+
+<forStatement>  ::= <statement>
+                |   break
+
+
+<initExpr>      ::= <varListDecl>
+                |   <label> = <expr>
+                |   ∑
+
+
+<termExpr>      ::= <compExpr>
+                |   ∑
+
+
+<incExpr>       ::= <label> = <expr>
+                |   ∑
+
+
+<elseif>        ::= elseif ( <compExpr> ) { (<statement>)* }
+
+
+<args>          ::= <expr> (, <expr>)*
+                |   ∑
+
+
+<compExpr>      ::= <compExpr> <compConcatOp> <compExprTerm>
+                |   <compExprTerm>
+
+
+<compExprTerm>  ::= ( <compExpr> )
+                |   ! <compExpr>
+                |   <expr> <compOp> <expr>
+                |   <expr>
+
+
+<expr>          ::= <expr> <binOp> <prod>
+                |   <prod>
+
+
+<prod>          ::= <prod> <primOp> <primary>
+                |   <primary>
+
+
+<primary>       ::= ( <expr> )
+                |   <label> ( <args> )
+                |   <label>
+                |   <val>
+
+
+<primOp>        ::= * | /
+
+
+<binOp>         ::= + | - | %
+
+
+<compConcatOp>  ::= && | '||'
+
+
+<compOp>        ::= > | < | == | >= | <=
+
+
+<type>          ::= boolean | int | double | string | <label>
+
+
+<funcType>      ::= <type>
+                |   void
+
+
+<val>           ::= <boolean> | <int> | <double> | <string> | <struct> | <label> . <label> | null
+
+
+<label>         ::= sequence of symbols
+
+
+<boolean>       ::= true | false
+
+
+<int>           ::= sequence of decimal digits
+
+
+<double>        ::= <int>
+                | <int> . <int>
+
+
+<string>        ::= sequence of chars between two double-quotes
+
+
+<struct>        ::= new <label> ( ) ;

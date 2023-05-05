@@ -1,0 +1,101 @@
+struct Node {
+    int val;
+    Node next;
+}
+
+struct List {
+    int size = 0;
+    Node first;
+}
+
+void add(List list, int pos, int x) {
+    if (pos < 0 || pos > list.size) {
+        printf("Incorrect position");
+        return;
+    }
+    Node newNode = new Node();
+    newNode.val = x;
+    if (list.size == 0) {
+        list.first = newNode;
+    } elseif (pos == 0) {
+        newNode.next = list.first;
+        list.first = newNode;
+    } else {
+        Node node = list.first;
+        for (int i = 0; i < pos - 1; i = i + 1) {
+            node = node.next;
+        }
+        newNode.next = node.next;
+        node.next = newNode;
+    }
+    list.size = list.size + 1;
+}
+
+int get(List list, int pos) {
+    if (pos < 0 || pos > list.size) {
+        printf("Position is out of range");
+        return 0;
+    }
+    Node node = list.first;
+    for (int i = 0; i < pos; i = i + 1) {
+        node = node.next;
+    }
+    return node.val;
+}
+
+int remove(List list, int pos) {
+    if (pos < 0 || pos > list.size) {
+        printf("Position is out of range");
+        return 0;
+    }
+    Node node, next;
+    if (pos == 0) {
+        node = list.first;
+        next = node.next;
+        list.first = next;
+    } else {
+        next = list.first;
+        for (int i = 0; i < pos - 1; i = i + 1) {
+            next = node.next;
+        }
+    }
+    node = next.next;
+    next.next = node.next;
+    list.size = list.size - 1;
+    return node.val;
+}
+
+void printList(List list) {
+    Node node = list.first;
+    string s = "[";
+    for (int i = 0; i < list.size; i = i + 1) {
+        if (i > 0) {
+            s = s + ", ";
+        }
+        s = s + node.val;
+        node = node.next;
+    }
+    s = s + "]";
+    printf(s);
+}
+
+int main() {
+    List list = new List();
+
+    add(list, 0, 10);
+    add(list, 0, 9);
+    printList(list);
+
+    add(list, 1, 11);
+    printList(list);
+
+    printf(get(list, 5));
+
+    printf(get(list, 1));
+
+    printf(remove(list, 1));
+
+    printList(list);
+
+    return 0;
+}
